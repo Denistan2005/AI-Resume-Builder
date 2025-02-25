@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+    
+        body {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);   
+            background-size: cover;
+            background-position: 50% 50%;
+            min-height: 100vh;
+            animation: gradientBG 1s ease infinite;
+            padding: 0.5rem;
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            flex-direction: column;
+            transition: background 0.6s ease-in-out;
+        }
+    
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 2400px;
+            padding: 15px 50px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            backdrop-filter: blur(4px);
+            border-radius: 1rem;
+            animation: slideDown 0.6s ease-out;
+            transition: background 0.6s ease-in-out, box-shadow 0.6s ease-in-out;
+        }
+    
+        .navbar h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            transition: background 0.6s ease-in-out, font-size 0.6s ease-in-out;
+        }
+    
+        .navbar .left {
+            color: #2c3e50;
+        }
+    
+        .navbar .center {
+            color: #2c3e50;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    
+        .navbar .right {
+            font-size: large;
+            color: #2c3e50;
+        }
+    
+        .container {
+            width: 1100px;
+            max-width: 2400px;
+            margin: 1rem 0;
+            padding: 2.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: transform 0.3s ease, background 0.6s ease-in-out;
+            animation: slideUp 0.6s ease-out;
+        }
+    
+        .container h2 {
+            text-align: center;
+        }
+    
+        .container:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+    
+        .input-group {
+            margin-top: 15px;
+            animation: fadeIn 0.5s ease-out;
+        }
+    
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #34495e;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.6s ease-in-out;
+        }
+    
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease, background 0.6s ease-in-out, border-color 0.6s ease-in-out;
+            background: rgba(255, 255, 255, 0.9);
+        }
+    
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+            transform: translateY(-2px);
+        }
+    
+        .input-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+    
+        .input-group input[type="checkbox"]:checked {
+            transform: scale(1.1);
+        }
+    
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(-45deg, #23a6d5, #23d5ab);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease, background 0.6s ease-in-out;
+            margin-top: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+    
+        .btn-primary:hover {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+        }
+    
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+    
+        .hidden {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+    
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+    
+        .form-row .input-group {
+            flex: 1;
+            min-width: calc(20% - 2rem);
+        }
+    
+        .datetime {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 24px;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 16px rgba(31, 38, 135, 0.1);
+            font-size: 1rem;
+            color: #2c3e50;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+    
+        .user-info {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 24px;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 16px rgba(31, 38, 135, 0.1);
+            font-size: 1rem;
+            color: #2c3e50;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .upload-box:hover {
+            background-color: #e8f0fe;
+        }
+
+        /* Adjust upload container to manage spacing */
+        .upload-container {
+            text-align: center;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px; /* Space between upload-box and remove button */
+        }
+
+        .upload-box {
+            width: 250px;
+            height: 250px;
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s ease;
+            position: relative;
+            background-color: #f9f9f9;
+            overflow: hidden; /* Prevent overflow */
+        }
+
+        /* Style the upload text */
+        #uploadText {
+            font-size: 1rem;
+            color: #34495e;
+            text-align: center;
+            padding: 0 20px;
+            margin: 0;
+        }
+
+        /* Group for image preview */
+        .image-preview-group {
+            width: 100%;
+            height: 100%; /* Fill the upload-box */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Center image within group */
+        }
+
+        /* Ensure preview image fills the container */
+        #previewImage {
+            width: 100%;
+            height: 100%; /* Use full height of upload-box */
+            object-fit: cover; /* Cover the area, cropping if needed */
+            border-radius: 10px;
+        }
+
+        /* Style the remove button below the upload box */
+        #removeImage {
+            padding: 5px 15px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* Hide upload text when image is present */
+        .upload-box.has-image #uploadText {
+            display: none;
+        }
+            
+        .hidden {
+            display: none;
+        }
+    
+        .button-group {
+            margin-top: 15px;
+        }
+    
+        .btn-upload, .btn-remove, .btn-primary {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            margin: 5px;
+        }
+    
+        .btn-upload:hover, .btn-primary:hover {
+            background-color: #2980b9;
+        }
+    
+        .btn-remove {
+            background-color: #e74c3c;
+        }
+    
+        .btn-remove:hover {
+            background-color: #c0392b;
+        }
+    
+        /* Animations */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    
+        @keyframes gradientFlow {
+            0% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+            100% { background-position: 0% center; }
+        }
+    
+        @keyframes textGradient {
+            0% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+            100% { background-position: 0% center; }
+        }
+    
+        @keyframes gradientMove {
+            0% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+            100% { background-position: 0% center; }
+        }
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    
+        /* Responsive adjustments */
+        @media (max-width: 1800px) {
+            .form-row .input-group {
+                min-width: calc(25% - 2rem);
+            }
+        }
+    
+        @media (max-width: 1400px) {
+            .form-row .input-group {
+                min-width: calc(33.33% - 2rem);
+            }
+        }
+    
+        @media (max-width: 1200px) {
+            .form-row .input-group {
+                min-width: calc(50% - 2rem);
+            }
+            
+            .navbar, .container {
+                max-width: 98%;
+                padding: 2rem;
+            }
+        }
+    
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+    
+            .navbar {
+                width: 98%;
+                padding: 1rem;
+            }
+    
+            .container {
+                width: 98%;
+                padding: 1.5rem;
+            }
+    
+            .navbar h2 {
+                font-size: 1.6rem;
+            }
+    
+            .form-row .input-group {
+                min-width: 100%;
+            }
+        }
+    
+        /* Ultra-wide screen support */
+        @media (min-width: 2400px) {
+            .navbar, .container {
+                max-width: 2800px;
+            }
+    
+            .form-row .input-group {
+                min-width: calc(16.66% - 2rem);
+            }
+        }
+    
+        /* Print styles */
+        @media print {
+            body {
+                background: none;
+                padding: 20px;
+            }
+    
+            .container {
+                box-shadow: none;
+                border: 1px solid #000;
+            }
+    
+            .btn-primary, .datetime, .user-info {
+                display: none;
+            }
+        }
+    
+        .error-container {
+            color: red;
+            margin: 10px 0;
+            display: none;
+        }
+    
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: block;
+            min-height: 20px;
+        }
+    
+        .input-group.error input,
+        .input-group.error select,
+        .input-group.error textarea {
+            border: 1px solid red;
+        }
+    
+        /* Chatbot Styles */
+        .chatbot-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(-45deg, #6a11cb, #2575fc);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+    
+        .close-btn, .refresh-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+    
+        .close-btn {
+            right: 10px;
+        }
+    
+        .refresh-btn {
+            right: 40px; /* Positioned to the left of the close button */
+        }
+    
+        .close-btn:hover, .refresh-btn:hover {
+            color: #ddd;
+        }
+    
+        .chatbot-btn:hover {
+            transform: scale(1.1);
+        }
+    
+        .chatbot-btn img {
+            width: 30px;
+            height: 30px;
+        }
+    
+        .chatbot-window {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            height: 450px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            backdrop-filter: blur(4px);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+        }
+    
+        .chatbot-header {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            position: relative; /* For positioning buttons */
+        }
+    
+        .chatbot-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+    
+        .chat-message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 0.5rem;
+            max-width: 80%;
+        }
+    
+        .user-message {
+            background: #6a11cb;
+            color: white;
+            margin-left: auto;
+        }
+    
+        .bot-message {
+            background: #e0e0e0;
+            color: #2c3e50;
+        }
+    
+        .chatbot-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+    
+        .chatbot-input input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem 0 0 0.5rem;
+            outline: none;
+        }
+    
+        .chatbot-input button {
+            padding: 8px 15px;
+            background: linear-gradient(-45deg, #23a6d5, #23d5ab);
+            color: white;
+            border: none;
+            border-radius: 0 0.5rem 0.5rem 0;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+    
+        .chatbot-input button:hover {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e);
+        }
+    
+        /* Entry-Specific Styling for Education, Work Experience, Projects, Internships and Certificatiosn */
+        .education-entry {
+            background: linear-gradient(135deg, rgba(255, 245, 230, 0.9), rgba(255, 255, 255, 0.9));
+            border: 2px solid #23a6d5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(35, 166, 213, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+    
+        .education-entry:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(35, 166, 213, 0.3);
+        }
+    
+        .work-entry {
+            background: linear-gradient(135deg, rgba(255, 245, 230, 0.9), rgba(255, 255, 255, 0.9));
+            border: 2px solid #23a6d5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(35, 166, 213, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+    
+        .work-entry:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(35, 166, 213, 0.3);
+        }
+    
+        .project-entry {
+            background: linear-gradient(135deg, rgba(255, 245, 230, 0.9), rgba(255, 255, 255, 0.9));
+            border: 2px solid #23a6d5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(35, 166, 213, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+    
+        .project-entry:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(35, 166, 213, 0.3);
+        }
+    
+        .internship-entry {
+            background: linear-gradient(135deg, rgba(255, 245, 230, 0.9), rgba(255, 255, 255, 0.9));
+            border: 2px solid #23a6d5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(35, 166, 213, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+    
+        .internship-entry:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(35, 166, 213, 0.3);
+        }
+
+        .certificate-entry {
+            background: linear-gradient(135deg, rgba(255, 245, 230, 0.9), rgba(255, 255, 255, 0.9));
+            border: 2px solid #23a6d5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(35, 166, 213, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+    
+        .certificate-entry:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(35, 166, 213, 0.3);
+        }
+
+        /* Container for checkbox and input to sit inline */
+        .checkbox-with-input {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between checkbox and input */
+        }
+
+
+        /* Override hidden class for inline behavior */
+        .other-input:not(.hidden) {
+            width: 350px; /* Expand to full width when visible */
+            opacity: 1;
+        }
+
+        /* Style for the date input group */
+        .date-group {
+            display: flex;
+            justify-content: space-between; /* Spread From and To sections */
+            align-items: flex-start; /* Align items at the top */
+            gap: 20px; /* Space between From and To */
+        }
+
+        /* Style for each date pair (label, input, error) */
+        .date-pair {
+            display: flex;
+            flex-direction: column; /* Stack label, input, and error vertically */
+            width: 48%; /* Slightly less than 50% to account for gap */
+        }
+
+        /* Style for the date label */
+        .date-label {
+            margin-right: 10px;
+            color: #34495e;
+            font-weight: 500;
+            font-size: 1rem;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Ensure error messages stay below their respective inputs */
+        .date-pair .error-message {
+            display: block;
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+            min-height: 20px;
+            text-align: left; /* Align error text under its input */
+        }
+
+        /* Enhance existing .input-group.error to include date inputs */
+        .input-group.error input,
+        .input-group.error select,
+        .input-group.error textarea,
+        .date-pair.error input[type="month"] {
+            border: 2px solid red; /* Red border for error state */
+        }
+
+        /* Optional: Add a class to date-pair when it has an error */
+        .date-pair.error .error-message {
+            display: block; /* Ensure error message is visible */
+        }
+
+        .template-container {
+            display: flex;
+            flex-direction: row; /* Arrange items horizontally in a row */
+            justify-content: space-between; /* Distribute items evenly across the container */
+            gap: 15px; /* Space between columns */
+            max-width: 1200px; /* Optional: Limit container width */
+            margin: 0 auto; /* Optional: Center the container */
+        }
+
+        .template-option {
+            display: flex;
+            flex-direction: column; /* Stack radio button and image vertically within each column */
+            align-items: center; /* Center items within each column */
+            flex: 1; /* Each column takes equal space */
+        }
+
+        .template-image {
+            width: 200px; /* Set desired width */
+            height: 200px; /* Set desired height */
+            object-fit: cover; /* Ensure the image scales nicely */
+        }
+
+        .button-group {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between; /* Align Previous and Next buttons on opposite ends */
+            gap: 10px; /* Space between buttons */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h2 class="left">ISS057</h2>
+        <h2 class="center">AI Resume Builder - KSI</h2>
+        <h2 class="right" id="datetime"></h2>
+    </nav>
+
+    <form action="/resume" method="POST" enctype="multipart/form-data">     
+        <!-- Step 1: Personal Information -->
+        <div class="container" id="step1">
+            <h2>Personal Information</h2>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Enter Your Full Name">
+                    <span class="error-message" id="name-error"></span>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter Your Email">
+                    <span class="error-message" id="email-error"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="Enter Your Phone Number">
+                    <span class="error-message" id="phone-error"></span>
+                </div>
+                <div class="input-group">
+                    <label for="linkedin">LinkedIn Profile</label>
+                    <input type="text" id="linkedin" placeholder="Enter LinkedIn Profile URL">
+                    <span class="error-message" id="linkedin-error"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" placeholder="Enter Your City">
+                    <span class="error-message" id="city-error"></span>
+                </div>
+                <div class="input-group">
+                    <label for="state">State</label>
+                    <input type="text" id="state" placeholder="Enter Your State">
+                    <span class="error-message" id="state-error"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="country">Country</label>
+                    <input type="text" id="country" placeholder="Enter Your Country">
+                    <span class="error-message" id="country-error"></span>
+                </div>
+                <div class="input-group">
+                    <label for="role">Role</label>
+                    <input type="text" id="role" placeholder="Enter Your Desired Role">
+                    <span class="error-message" id="role-error"></span>
+                </div>
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="window.location.href='C:\\Deni\\Clinics\\Resume\\venv\\Final\\home.html'">
+                    <i class="fas fa-home"></i> Home
+                </button>
+                <button class="btn-primary" type="button" onclick="validatePersonal(2)">Next</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Education -->
+        <div class="container hidden" id="step2">
+            <h2>Education</h2>
+            <div id="education-entries">
+                <div class="education-entry">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="degree-0">Degree</label>
+                            <select id="degree-0" onchange="checkDegree(this)">
+                                <option value="" selected disabled>-- Select Degree --</option>
+                                <option value="10th">10th</option>
+                                <option value="12th">12th</option>
+                                <option value="B.E">B.E</option>
+                                <option value="B.Tech">B.Tech</option>
+                                <option value="M.E">M.E</option>
+                                <option value="M.Tech">M.Tech</option>
+                            </select>
+                            <span class="error-message" id="degree-0-error"></span>
+                        </div>
+                        <div class="input-group">
+                            <label for="institution-name-0">Institution Name</label>
+                            <input type="text" id="institution-name-0" placeholder="Enter Institution Name">
+                            <span class="error-message" id="institution-name-0-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="completion-year-0">Year of Completion</label>
+                            <input type="number" id="completion-year-0" min="2020" placeholder="Enter Year of Completion">
+                            <span class="error-message" id="completion-year-0-error"></span>
+                        </div>
+                        <div class="input-group">
+                            <label for="percentage-cgpa-0">Percentage</label>
+                            <input type="number" id="percentage-cgpa-0" min="0" max="100" placeholder="Enter Percentage">
+                            <span class="error-message" id="percentage-cgpa-0-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row hidden" id="branch-group-0">
+                        <div class="input-group">
+                            <label for="branches-0">Branch</label>
+                            <select id="branches-0">
+                                <option value="" selected disabled>-- Select Branch --</option>
+                            <option value="Aeronautical Engineering">Aeronautical Engineering</option>
+                            <option value="Aerospace Engineering">Aerospace Engineering</option>
+                            <option value="Artificial Intelligence and Machine Learning">Artificial Intelligence and Machine Learning</option>
+                            <option value="Automobile Engineering">Automobile Engineering</option>
+                            <option value="Biotechnology Engineering">Biotechnology Engineering</option>
+                            <option value="Chemical Engineering">Chemical Engineering</option>
+                            <option value="Civil Engineering">Civil Engineering</option>
+                            <option value="Cloud Computing">Cloud Computing</option>
+                            <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                            <option value="Cyber Security">Cyber Security</option>
+                            <option value="Data Science">Data Science</option>
+                            <option value="Electrical Engineering">Electrical Engineering</option>
+                            <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
+                            <option value="Electronics and Instrumentation Engineering">Electronics and Instrumentation Engineering</option>
+                            <option value="Marine Engineering">Marine Engineering</option>
+                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            <option value="Mechatronics Engineering">Mechatronics Engineering</option>
+                            <option value="Robotics Engineering">Robotics Engineering</option>
+                            <option value="Telecommunication Engineering">Telecommunication Engineering</option>
+                            <option value="Textile Engineering">Textile Engineering</option>
+                            </select>
+                            <span class="error-message" id="branches-0-error"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-primary" type="button" onclick="addEducation()">Add Another Education Entry</button>
+            <div class="button-group">
+                <button class="btn-primary" type="button" onclick="previousStep(1)">Previous</button>
+                <button class="btn-primary" type="button" onclick="validateEducation()">Next</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Work Experience -->
+        <div class="container hidden" id="step3">
+            <h2>Work Experience</h2>
+            <div id="work-experience">
+                <div class="work-entry">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="job-title-0">Job Title</label>
+                            <input type="text" id="job-title-0" placeholder="Enter Job Title">
+                            <span class="error-message" id="job-title-0-error"></span>
+                        </div>
+                        <div class="input-group">
+                            <label for="company-name-0">Company Name</label>
+                            <input type="text" id="company-name-0" placeholder="Enter Company Name">
+                            <span class="error-message" id="company-name-0-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="location-type-0">Location Type</label>
+                            <select id="location-type-0">
+                                <option value="" selected disabled>-- Select Type --</option>
+                                <option value="remote">Remote</option>
+                                <option value="on-site">On-site</option>
+                            </select>
+                            <span class="error-message" id="location-type-0-error"></span>
+                        </div>
+                        <div class="input-group">
+                            <label for="responsibilities-0">Role</label><br>
+                            <input type="checkbox" name="responsibility-0" value="Managing teams"> Managing teams  
+                            <input type="checkbox" name="responsibility-0" value="Project management"> Project management <br><br>
+                            <input type="checkbox" name="responsibility-0" value="Code Review"> Code Debug  &nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="checkbox" name="responsibility-0" value="Client communication"> Client communication <br><br>
+                            <div class="checkbox-with-input">
+                                <input type="checkbox" id="other-checkbox-0" name="responsibility-0" value="Other" onclick="toggleOtherInput(this)"> Other
+                                <div class="other-input hidden" id="other-responsibility-group-0">
+                                    <input type="text" id="other-responsibility-0" name="other-responsibility-0" placeholder="Enter Responsibility">
+                                </div>
+                            </div>
+                            <span class="error-message" id="responsibility-0-error"></span>
+                        </div>
+                    </div>
+                    <div class="input-group date-group">
+                        <div class="date-pair">
+                            <span class="date-label">From</span>
+                            <input type="month" id="start-employment-period-0" style="width: 100%;">
+                            <span class="error-message" id="start-employment-period-0-error"></span>
+                        </div>
+                        <div class="date-pair">
+                            <span class="date-label">To</span>
+                            <input type="month" id="end-employment-period-0" style="width: 100%;">
+                            <span class="error-message" id="end-employment-period-0-error"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-primary" type="button" onclick="addExperience()">Add Another Work Experience</button>
+            <div class="button-group">
+                <button class="btn-primary" type="button" onclick="previousStep(2)">Previous</button>
+                <button class="btn-primary" type="button" onclick="validateWorkExperience()">Next</button>
+            </div>
+        </div>
+
+        <!-- Step 4: Projects -->
+        <div class="container hidden" id="step4">
+            <h2>Projects</h2>
+            <div id="project-entries">
+                <div class="project-entry">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="project-title-0">Project Title</label>
+                            <input type="text" id="project-title-0" placeholder="Enter Project Title">
+                            <span class="error-message" id="project-title-0-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="project-description-0">Project Description</label>
+                            <textarea id="project-description-0" rows="4" placeholder="Enter Project Description"></textarea>
+                            <span class="error-message" id="project-description-0-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="project-technologies-0">Technologies Used</label>
+                            <input type="text" id="project-technologies-0" placeholder="Enter Technologies Used">
+                            <span class="error-message" id="project-technologies-0-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group date-group">
+                            <div class="date-pair">
+                                <span class="date-label">From</span>
+                                <input type="month" id="start-project-year-0" style="width: 100%;">
+                                <span class="error-message" id="start-project-year-0-error"></span>
+                            </div>
+                            <div class="date-pair">
+                                <span class="date-label">To</span>
+                                <input type="month" id="end-project-year-0" style="width: 100%;">
+                                <span class="error-message" id="end-project-year-0-error"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+            <button class="btn-primary" type="button" onclick="addProject()">Add Another Project</button>
+            <div class="button-group">
+                <button class="btn-primary" type="button" onclick="previousStep(3)">Previous</button>
+                <button class="btn-primary" type="button" onclick="validateProject()">Next</button>
+            </div>
+        </div>
+
+        <!-- Step 5: Internships -->
+        <div class="container hidden" id="step5">
+            <h2>Internships</h2>
+            <div id="internships">
+                <div class="internship-entry">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="internship-company-0">Company Name</label>
+                            <input type="text" id="internship-company-0" placeholder="Enter Company Name">
+                            <span class="error-message" id="internship-company-0-error"></span>
+                        </div>
+                        <div class="input-group">
+                            <label for="internship-role-0">Role</label>
+                            <input type="text" id="internship-role-0" placeholder="Enter Internship Role">
+                            <span class="error-message" id="internship-role-0-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="internship-duration-0">Internship Duration</label>
+                            <input type="text" id="internship-duration-0" placeholder="Enter Duration (e.g. 3 months)">
+                            <span class="error-message" id="internship-duration-0-error"></span>
+                        </div>
+                        <div class="input-group">
+                            <label for="internship-responsibilities-0">Responsibilities</label>
+                            <input type="text" id="internship-responsibilities-0" placeholder="Enter Responsibilities">
+                            <span class="error-message" id="internship-responsibilities-0-error"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-primary" type="button" onclick="addInternship()">Add Another Internship</button>
+            <div class="button-group">
+                <button class="btn-primary" type="button" onclick="previousStep(4)">Previous</button>
+                <button class="btn-primary" type="button" onclick="validateInternship()">Next</button>
+            </div>
+        </div>
+
+        <!-- Step 6: Skills -->
+        <div class="container hidden" id="step6">
+            <h2>Skills</h2>
+            <div class="input-group">
+                <label for="skills">Choose Your Programming Skills</label><br>
+                <div>
+                    <input type="checkbox" name="skills" value="Python"> Python
+                </div><br>
+                <div>
+                    <input type="checkbox" name="skills" value="Java"> Java
+                </div><br>
+                <div>
+                    <input type="checkbox" name="skills" value="C++"> C++
+                </div><br>
+                <div>
+                    <input type="checkbox" name="skills" value="JavaScript"> JavaScript
+                </div><br>
+                <div class="checkbox-with-input">
+                    <input type="checkbox" id="other-checkbox-skills" name="skills" value="Other" onclick="toggleOtherSkillInput(this)"> Other
+                    <div class="other-input hidden" id="other-skill-group">
+                        <input type="text" id="other-skill" name="other-skill" placeholder="Enter Skills">
+                    </div>
+                </div>
+                <span class="error-message" id="skills-error"></span>
+            </div><br>
+            <div class="button-group">
+                <button class="btn-primary" type="button" onclick="previousStep(5)">Previous</button>
+                <button class="btn-primary" type="button" onclick="validateSkills()">Next</button>
+            </div>
+        </div>
+
+        <!-- Step 7: Certifications -->
+        <div class="container hidden" id="step7">
+            <h2>Certifications</h2>
+            <div id="certifications">
+                <div class="certificate-entry">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="certification-name-0">Certification Name</label>
+                            <input type="text" id="certification-name-0" placeholder="Enter Certification Name">
+                            <span class="error-message" id="certification-name-0-error"></span>
+                        </div>
+                        <div class="input-group">
+                            <label for="issuing-org-0">Issuing Organization</label>
+                            <input type="text" id="issuing-org-0" placeholder="Enter Issuing Organization">
+                            <span class="error-message" id="issuing-org-0-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="certification-year-0">Year of Certification</label>
+                            <input type="number" id="certification-year-0" min="2020" placeholder="Enter Year of Certification">
+                            <span class="error-message" id="certification-year-0-error"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-primary" type="button" onclick="addCertification()">Add Another Certification</button>
+            <div class="button-group">
+                <button class="btn-primary" type="button" onclick="previousStep(6)">Previous</button>
+                <button class="btn-primary" type="button" onclick="validateCertification()">Next</button>
+            </div>
+        </div>
+
+        <!-- Step 8: Languages Known -->
+        <div class="container hidden" id="step8">
+            <h2>Languages Known</h2><br>
+            <div class="input-group">
+                <label>Languages</label><br>
+                <div>
+                    <input type="checkbox" name="languages" value="English"> English<br><br>
+                    <input type="checkbox" name="languages" value="Hindi"> Hindi<br><br>
+                    <input type="checkbox" name="languages" value="German"> German<br><br>
+                    <input type="checkbox" name="languages" value="French"> French<br><br>
+                    <input type="checkbox" name="languages" value="Japanese"> Japanese<br><br>
+                    <div class="checkbox-with-input">
+                        <input type="checkbox" id="other-checkbox-languages" name="languages" value="Other" onclick="toggleOtherLanguageInput(this)"> Other
+                        <div class="other-input hidden" id="other-language-group">
+                            <input type="text" id="other-language" name="other-language" placeholder="Enter Language">
+                        </div>
+                    </div>
+                </div>
+                <span class="error-message" id="languages-error"></span>
+            </div>
+            <div class="button-group">
+                <button class="btn-primary" type="button" onclick="previousStep(7)">Previous</button>
+                <button class="btn-primary" type="button" onclick="validateLanguages()">Next</button>
+            </div>
+        </div>
+
+        <!-- Step 9: Image Upload -->
+        <div class="container hidden" id="step9">
+            <h2>Upload Your Profile Photo</h2><br>
+            <div class="upload-container" id="drop-area">
+                <input type="file" name="imageUpload" id="imageUpload" accept="image/*" hidden>
+                <label for="imageUpload" class="upload-label">
+                    <div class="upload-box">
+                        <p id="uploadText">Drag & Drop or Click to Upload</p>
+                        <div class="image-preview-group hidden">
+                            <img id="previewImage">
+                        </div>
+                    </div>
+                </label>
+                <button type="button" class="btn-remove hidden" id="removeImage" onclick="removeImage()">Remove</button>
+                <span class="error-message" id="imageUpload-error"></span>
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="document.getElementById('imageUpload').click()">Choose File</button>
+            </div>
+            <div class="button-group">
+                <button class="btn-primary" type="button" onclick="previousStep(8)">Previous</button>
+                <button class="btn-primary" type="button" onclick="validateImage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Step 10: Template -->
+        <div class="container hidden" id="step10">
+            <h2>Choose Template</h2><br>
+            <div class="template-container">
+                <div class="template-option"> 
+                    <label for="resume1"><img src="C:\Deni\Clinics\Resume\venv\Final\templates\Resume1.png" alt="Resume 1 template preview" class="template-image"></label><br>
+                    <input style="height: 100%;" type="radio" name="template" value="resume1" id="modern">
+                </div>
+                
+                <div class="template-option">
+                    <label for="resume2"><img src="C:\Deni\Clinics\Resume\venv\Final\templates\Resume2.png" alt="Resume 2 template preview" class="template-image"></label><br>
+                    <input type="radio" name="template" value="resume2" id="classic"> 
+                </div>
+                
+                <div class="template-option"> 
+                    <label for="resume3"><img src="C:\Deni\Clinics\Resume\venv\Final\templates\Resume3.png" alt="Resume 3 template preview" class="template-image"></label><br>
+                    <input type="radio" name="template" value="resume3" id="creative">
+                </div>
+            </div>
+            <span class="error-message" id="template-error"></span><br>
+            <div class="button-group">
+                <button class="btn-primary" type="button" onclick="previousStep(9)">Previous</button>
+                <button class="btn-primary" type="button" onclick="validateTemplate()">Submit</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Chatbot UI -->
+    <div class="chatbot-btn" onclick="toggleChatbot()">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/chat.png" alt="Chat Icon">
+    </div>
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+            Resume Assistant
+            <button class="close-btn" onclick="closeChatbot()">×</button>
+            <button class="refresh-btn" onclick="refreshChatbot()">↻</button>
+        </div>
+        <div class="chatbot-body" id="chatbotBody">
+            <div class="chat-message bot-message">Hello! I'm your AI assistant powered by ISS057. How can I help you with your resume?</div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentStep = 1;
+        let education_entries = [];
+        let work_entries = [];
+        let project_entries = [];
+        let intership_entries = [];
+        let certificates_centries = [];
+
+        // Date and Time
+        function updateDateTime() {
+            const now = new Date();
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istNow = new Date(now.getTime() + istOffset);
+            const formattedDate = istNow.toISOString().replace('T', ' ').substring(0, 19);
+            document.getElementById('datetime').textContent = `${formattedDate}`;
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        // Replace the existing nextStep function with this updated version
+        function changeStep(current, target) {
+            document.getElementById('step' + current).classList.add('hidden');
+            document.getElementById('step' + target).classList.remove('hidden');
+            currentStep = target;
+        }
+
+        // New function for moving to the previous step
+        function previousStep(step) {
+            changeStep(currentStep, step);
+}
+
+        // Next Step
+        function nextStep(step) {
+            document.getElementById('step' + currentStep).classList.add('hidden');
+            document.getElementById('step' + step).classList.remove('hidden');
+            currentStep = step;
+        }
+
+        // Education
+        function checkDegree(select) {
+            const index = select.id.split('-')[1];
+            const degree = select.value;
+            const branchGroup = document.getElementById(`branch-group-${index}`);
+            branchGroup.classList.toggle('hidden', !['B.E', 'B.Tech', 'M.E', 'M.Tech'].includes(degree));
+        }
+
+        function addEducation() {
+            const educationEntries = document.getElementById('education-entries');
+            const newEntry = document.createElement("div");
+            newEntry.classList.add("education-entry");
+            const index = educationCount++;
+            newEntry.innerHTML = `
+                <br>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="degree-${index}">Degree</label>
+                        <select id="degree-${index}" onchange="checkDegree(this)">
+                            <option value="" selected disabled>-- Select Degree --</option>
+                            <option value="10th">10th</option>
+                            <option value="12th">12th</option>
+                            <option value="B.E">B.E</option>
+                            <option value="B.Tech">B.Tech</option>
+                            <option value="M.E">M.E</option>
+                            <option value="M.Tech">M.Tech</option>
+                        </select>
+                        <span class="error-message" id="degree-${index}-error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="institution-name-${index}">Institution Name</label>
+                        <input type="text" id="institution-name-${index}" placeholder="Enter Institution Name">
+                        <span class="error-message" id="institution-name-${index}-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="completion-year-${index}">Year of Completion</label>
+                        <input type="number" id="completion-year-${index}" min="2020" placeholder="Enter Year of Completion">
+                        <span class="error-message" id="completion-year-${index}-error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="percentage-cgpa-${index}">Percentage</label>
+                        <input type="number" id="percentage-cgpa-${index}" min="0" max="100" placeholder="Enter Percentage">
+                        <span class="error-message" id="percentage-cgpa-${index}-error"></span>
+                    </div>
+                </div>
+                <div class="form-row hidden" id="branch-group-${index}">
+                    <div class="input-group">
+                        <label for="branches-${index}">Branch</label>
+                        <select id="branches-${index}">
+                            <option value="" selected disabled>-- Select Branch --</option>
+                            <option value="Aeronautical Engineering">Aeronautical Engineering</option>
+                            <option value="Aerospace Engineering">Aerospace Engineering</option>
+                            <option value="Artificial Intelligence and Machine Learning">Artificial Intelligence and Machine Learning</option>
+                            <option value="Automobile Engineering">Automobile Engineering</option>
+                            <option value="Biotechnology Engineering">Biotechnology Engineering</option>
+                            <option value="Chemical Engineering">Chemical Engineering</option>
+                            <option value="Civil Engineering">Civil Engineering</option>
+                            <option value="Cloud Computing">Cloud Computing</option>
+                            <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                            <option value="Cyber Security">Cyber Security</option>
+                            <option value="Data Science">Data Science</option>
+                            <option value="Electrical Engineering">Electrical Engineering</option>
+                            <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
+                            <option value="Electronics and Instrumentation Engineering">Electronics and Instrumentation Engineering</option>
+                            <option value="Marine Engineering">Marine Engineering</option>
+                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            <option value="Mechatronics Engineering">Mechatronics Engineering</option>
+                            <option value="Robotics Engineering">Robotics Engineering</option>
+                            <option value="Telecommunication Engineering">Telecommunication Engineering</option>
+                            <option value="Textile Engineering">Textile Engineering</option>
+                        </select>
+                        <span class="error-message" id="branches-${index}-error"></span>
+                    </div>
+                </div><br>
+                <button class="btn-primary" type="button" onclick="removeEducation(this)">Remove</button><br><br><br>
+            `;
+            educationEntries.appendChild(newEntry);
+        }
+
+        function collectEducationData() {
+            let educationData = [];
+            document.querySelectorAll('.education-entry').forEach((entry, index) => {
+                const degree = entry.querySelector(`#degree-${index}`).value;
+                const institution = entry.querySelector(`#institution-name-${index}`).value;
+                const year = entry.querySelector(`#completion-year-${index}`).value;
+                const percentage = entry.querySelector(`#percentage-cgpa-${index}`).value;
+                let educationEntry = { degree, institution, year, percentage };
+                if (['B.E', 'B.Tech', 'M.E', 'M.Tech'].includes(degree)) {
+                    educationEntry.branch = entry.querySelector(`#branches-${index}`).value;
+                }
+                educationData.push(educationEntry);
+            });
+            education_entries = educationData;
+            return educationData;
+        }
+
+        function removeEducation(button) {
+            button.parentElement.remove();
+        }
+
+        // Work Experience
+        function addExperience() {
+            const container = document.getElementById('work-experience');
+            const newEntry = document.createElement("div");
+            newEntry.classList.add("work-entry");
+            const index = experienceCount++;
+            newEntry.innerHTML = `
+                <br><br><br>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="job-title-${index}">Job Title</label>
+                        <input type="text" id="job-title-${index}" placeholder="Enter Job Title">
+                        <span class="error-message" id="job-title-${index}-error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="company-name-${index}">Company Name</label>
+                        <input type="text" id="company-name-${index}" placeholder="Enter Company Name">
+                        <span class="error-message" id="company-name-${index}-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="location-type-${index}">Location Type</label>
+                        <select id="location-type-${index}">
+                            <option value="" selected disabled>-- Select Type --</option>
+                            <option value="remote">Remote</option>
+                            <option value="on-site">On-site</option>
+                        </select>
+                        <span class="error-message" id="location-type-${index}-error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="responsibilities-${index}">Role</label><br>
+                        <input type="checkbox" name="responsibility-${index}" value="Managing teams"> Managing teams  
+                        <input type="checkbox" name="responsibility-${index}" value="Project management"> Project management <br><br>
+                        <input type="checkbox" name="responsibility-${index}" value="Code Review"> Code Debug  
+                        <input type="checkbox" name="responsibility-${index}" value="Client communication"> Client communication <br><br>
+                        <div class="checkbox-with-input">
+                            <input type="checkbox" id="other-checkbox-${index}" name="responsibility-${index}" value="Other" onclick="toggleOtherInput(this)"> Other
+                            <div class="other-input hidden" id="other-responsibility-group-${index}">
+                                <input type="text" id="other-responsibility-${index}" name="other-responsibility-${index}" placeholder="Enter Responsibility">
+                            </div>
+                        </div>
+                        <span class="error-message" id="responsibility-${index}-error"></span>
+                    </div>
+                </div>
+                <div class="input-group date-group">
+                    <div class="date-pair">
+                        <span class="date-label">From</span>
+                        <input type="month" id="start-employment-period-${index}" style="width: 100%;">
+                        <span class="error-message" id="start-employment-period-${index}-error"></span>
+                    </div>
+                    <div class="date-pair">
+                        <span class="date-label">To</span>
+                        <input type="month" id="end-employment-period-${index}" style="width: 100%;">
+                        <span class="error-message" id="end-employment-period-0-error"></span>
+                    </div>
+                </div><br>
+                <button class="btn-primary" onclick="removeExperience(this)">Remove</button><br>
+            `;
+            container.appendChild(newEntry);
+        }
+
+        function removeExperience(button) {
+            button.parentElement.remove();
+        }
+
+        function collectWorkExperienceData() {
+            let workExperienceData = [];
+            document.querySelectorAll('.work-entry').forEach((entry, index) => {
+                const title = entry.querySelector(`#job-title-${index}`).value;
+                const company = entry.querySelector(`#company-name-${index}`).value;
+                const locationType = entry.querySelector(`#location-type-${index}`).value;
+                const start = entry.querySelector(`#start-employment-period-${index}`).value;
+                const end = entry.querySelector(`#end-employment-period-${index}`).value;
+                const responsibilities = [];
+                entry.querySelectorAll(`input[name="responsibility-${index}"]:checked`).forEach(checkbox => {
+                    responsibilities.push(checkbox.value);
+                });
+                const otherCheckbox = entry.querySelector(`#other-checkbox-${index}`);
+                if (otherCheckbox && otherCheckbox.checked) {
+                    const customResponsibility = entry.querySelector(`#other-responsibility-${index}`).value.trim();
+                    if (customResponsibility) { // Only add if not empty
+                        responsibilities.push(customResponsibility);
+                    }
+                }
+                workExperienceData.push({ title, company, locationType, start, end, responsibilities });
+            });
+            work_entries = workExperienceData;
+            return workExperienceData;
+        }
+
+        function toggleOtherInput(checkbox) {
+            // Extract index from the checkbox ID (assuming format like "other-checkbox-0")
+            const index = checkbox.id.split('-').pop(); // Gets the number after the last hyphen
+            const otherInputGroup = document.getElementById(`other-responsibility-group-${index}`);
+            if (checkbox.checked) {
+                otherInputGroup.classList.remove('hidden');
+                otherInputGroup.querySelector('input').focus();
+            } else {
+                otherInputGroup.classList.add('hidden');
+            }
+        }
+
+        // Projects
+        function addProject() {
+            const container = document.getElementById('project-entries');
+            const newEntry = document.createElement("div");
+            newEntry.classList.add("project-entry");
+            const index = projectCount++;
+            newEntry.innerHTML = `
+                <br>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="project-title-${index}">Project Title</label>
+                        <input type="text" id="project-title-${index}" placeholder="Enter Project Title">
+                        <span class="error-message" id="project-title-${index}-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="project-description-${index}">Project Description</label>
+                        <textarea id="project-description-${index}" rows="4" placeholder="Enter Project Description"></textarea>
+                        <span class="error-message" id="project-description-${index}-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="project-technologies-${index}">Technologies Used</label>
+                        <input type="text" id="project-technologies-${index}" placeholder="Enter Technologies Used">
+                        <span class="error-message" id="project-technologies-${index}-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group date-group">
+                        <div class="date-pair">
+                            <span class="date-label">From</span>
+                            <input type="month" id="start-project-year-${index}" style="width: 100%;">
+                            <span class="error-message" id="start-project-year-${index}-error"></span>
+                        </div>
+                        <div class="date-pair">
+                            <span class="date-label">To</span>
+                            <input type="month" id="end-project-year-${index}" style="width: 100%;">
+                            <span class="error-message" id="end-project-year-${index}-error"></span>
+                        </div>
+                    </div>
+                </div><br>
+                <button class="btn-primary" onclick="removeProject(this)">Remove</button><br><br><br>
+            `;
+            container.appendChild(newEntry);
+        }
+
+        function removeProject(button) {
+            button.parentElement.remove();
+        }
+
+        function collectProjectsData() {
+            let projectsData = [];
+            document.querySelectorAll('.project-entry').forEach((entry, index) => {
+                const title = entry.querySelector(`#project-title-${index}`).value;
+                const description = entry.querySelector(`#project-description-${index}`).value;
+                const technologies = entry.querySelector(`#project-technologies-${index}`).value;
+                const start = entry.querySelector(`#start-project-year-${index}`).value;
+                const end = entry.querySelector(`#end-project-year-${index}`).value || "Ongoing";
+                projectsData.push({ title, description, technologies, start, end });
+            });
+            project_entries = projectsData;
+            return projectsData;
+        }
+
+        // Internships
+        function addInternship() {
+            const container = document.getElementById('internships');
+            const newEntry = document.createElement("div");
+            newEntry.classList.add("internship-entry");
+            const index = internshipCount++;
+            newEntry.innerHTML = `
+                <br>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="internship-company-${index}">Company Name</label>
+                        <input type="text" id="internship-company-${index}" placeholder="Enter Company Name">
+                        <span class="error-message" id="internship-company-${index}-error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="internship-role-${index}">Role</label>
+                        <input type="text" id="internship-role-${index}" placeholder="Enter Internship Role">
+                        <span class="error-message" id="internship-role-${index}-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="internship-duration-${index}">Internship Duration</label>
+                        <input type="text" id="internship-duration-${index}" placeholder="Enter Duration (e.g. 3 months)">
+                        <span class="error-message" id="internship-duration-${index}-error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="internship-responsibilities-${index}">Responsibilities</label>
+                        <input type="text" id="internship-responsibilities-${index}" placeholder="Enter Responsibilities">
+                        <span class="error-message" id="internship-responsibilities-${index}-error"></span>
+                    </div>
+                </div><br>
+                <button class="btn-primary" type="button" onclick="removeInternship(this)">Remove</button><br><br><br>
+            `;
+            container.appendChild(newEntry);
+        }
+
+        function collectInternshipsData() {
+            let internshipsData = [];
+            document.querySelectorAll('.internship-entry').forEach((entry, index) => {
+                const company = entry.querySelector(`#internship-company-${index}`).value;
+                const role = entry.querySelector(`#internship-role-${index}`).value;
+                const duration = entry.querySelector(`#internship-duration-${index}`).value;
+                const responsibilities = entry.querySelector(`#internship-responsibilities-${index}`).value;
+                internshipsData.push({ company, role, duration, responsibilities });
+            });
+            intership_entries = internshipsData;
+            return internshipsData;
+        }
+
+        function removeInternship(button) {
+            button.parentElement.remove();
+        }
+
+        // Skills
+        function toggleOtherSkillInput(checkbox) {
+            const otherInputGroup = document.getElementById('other-skill-group');
+            if (checkbox.checked) {
+                otherInputGroup.classList.remove('hidden');
+                otherInputGroup.querySelector('input').focus();
+            } else {
+                otherInputGroup.classList.add('hidden');
+            }
+        }
+
+        function collectSkills() {
+            let values = [];
+            document.querySelectorAll('input[name="skills"]:checked').forEach(checkbox => {
+                values.push(checkbox.value);
+            });
+            
+            const otherCheckbox = document.getElementById('other-checkbox-skills');
+            if (otherCheckbox && otherCheckbox.checked) {
+                const customSkill = document.getElementById('other-skill').value.trim();
+                if (customSkill) { // Only add if not empty
+                    values.push(customSkill);
+                }
+            }
+            
+            return values;
+        }
+
+        // Certifications
+        function addCertification() {
+            const container = document.getElementById('certifications');
+            const newEntry = document.createElement("div");
+            newEntry.classList.add("certificate-entry");
+            const index = certificationCount++;
+            newEntry.innerHTML = `
+                <br>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="certification-name-${index}">Certification Name</label>
+                        <input type="text" id="certification-name-${index}" placeholder="Enter Certification Name">
+                        <span class="error-message" id="certification-name-${index}-error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="issuing-org-${index}">Issuing Organization</label>
+                        <input type="text" id="issuing-org-${index}" placeholder="Enter Issuing Organization">
+                        <span class="error-message" id="issuing-org-${index}-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="certification-year-${index}">Year of Certification</label>
+                        <input type="number" id="certification-year-${index}" min="2020" placeholder="Enter Year of Certification">
+                        <span class="error-message" id="certification-year-${index}-error"></span>
+                    </div>
+                </div><br>
+                <button class="btn-primary" type="button" onclick="removeCertificate(this)">Remove</button><br><br><br>
+            `;
+            container.appendChild(newEntry);
+        }
+
+        function collectCertificationsData() {
+            let certificationsData = [];
+            document.querySelectorAll('.certificate-entry').forEach((entry, index) => {
+                const name = entry.querySelector(`#certification-name-${index}`).value;
+                const organization = entry.querySelector(`#issuing-org-${index}`).value;
+                const year = entry.querySelector(`#certification-year-${index}`).value;
+                certificationsData.push({ name, organization, year });
+            });
+            certificates_centries = certificationsData;
+            return certificationsData;
+        }
+
+        function removeCertificate(button) {
+            button.parentElement.remove();
+        }
+
+        // Languages
+        function toggleOtherLanguageInput(checkbox) {
+            const otherInputGroup = document.getElementById('other-language-group');
+            if (checkbox.checked) {
+                otherInputGroup.classList.remove('hidden');
+                otherInputGroup.querySelector('input').focus();
+            } else {
+                otherInputGroup.classList.add('hidden');
+            }
+        }
+        
+        function collectLanguages() {
+            let values = [];
+            document.querySelectorAll('input[name="languages"]:checked').forEach(checkbox => {
+                values.push(checkbox.value);
+            });
+            
+            const otherCheckbox = document.getElementById('other-checkbox-languages');
+            if (otherCheckbox && otherCheckbox.checked) {
+                const customLanguage = document.getElementById('other-language').value.trim();
+                if (customLanguage) { // Only add if not empty
+                    values.push(customLanguage);
+                }
+            }
+            
+            return values;
+        }
+
+        // Image Upload
+        const imageUpload = document.getElementById("imageUpload");
+        const dropArea = document.getElementById("drop-area");
+        const previewImage = document.getElementById("previewImage");
+        const uploadText = document.getElementById("uploadText");
+        const removeButton = document.getElementById("removeImage");
+        const uploadBox = document.querySelector('.upload-box');
+        const imageGroup = document.querySelector('.image-preview-group');
+        let imageBuffer = null;
+
+        imageUpload.addEventListener("change", function(event) {
+            handleFile(event.target.files[0]);
+        });
+
+        dropArea.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            dropArea.style.border = "2px solid #2ecc71";
+        });
+
+        dropArea.addEventListener("dragleave", () => {
+            dropArea.style.border = "2px dashed #3498db";
+        });
+
+        dropArea.addEventListener("drop", (event) => {
+            event.preventDefault();
+            dropArea.style.border = "2px dashed #3498db";
+            const file = event.dataTransfer.files[0];
+            imageUpload.files = event.dataTransfer.files;
+            handleFile(file);
+        });
+
+        function handleFile(file) {
+            if (file && file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    previewImage.src = event.target.result;
+                    imageGroup.classList.remove("hidden"); // Show image group
+                    uploadBox.classList.add("has-image"); // Hide upload text
+                    removeButton.classList.remove("hidden"); // Show remove button
+                    imageBuffer = event.target.result;
+                };
+                reader.onerror = function() {
+                    alert("Error loading image file.");
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert("Please upload a valid image file.");
+            }
+        }
+
+        function removeImage() {
+            previewImage.src = "";
+            imageGroup.classList.add("hidden"); // Hide image group
+            uploadBox.classList.remove("has-image"); // Show upload text
+            removeButton.classList.add("hidden"); // Hide remove button
+            imageUpload.value = "";
+            imageBuffer = null;
+        }
+
+
+        // Template
+        function collectTemplate() {
+            const selectedTemplateRadio = document.querySelector('input[name="template"]:checked');
+            let templateValue = selectedTemplateRadio ? selectedTemplateRadio.value : '';
+            return templateValue;
+        }
+
+        // Form Submission
+        function detailsStore() {
+            const details = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                linkedin: document.getElementById('linkedin').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                country: document.getElementById('country').value,
+                role: document.getElementById('role').value,
+                education: collectEducationData(),
+                workExperience: collectWorkExperienceData(),
+                projects: collectProjectsData(),
+                internships: collectInternshipsData(),
+                skills: collectSkills(),
+                certifications: collectCertificationsData(),
+                languages: collectLanguages(),
+                image: imageBuffer,
+                template: collectTemplate()
+            };
+            console.log(details)
+            fetch("http://127.0.0.1:5000/resume", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(details)
+            })
+            .then(response => response.text())
+            .then(html => {
+                document.open();
+                document.write(html);
+                document.close();
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Failed to generate resume! Please ensure the server is running and try again..");
+            });
+        }
+
+        // Counter for dynamic entries
+        let educationCount = 1;
+        let experienceCount = 1;
+        let projectCount = 1;
+        let internshipCount = 1;
+        let certificationCount = 1;
+
+        // Helper Functions
+        function clearErrors(container) {
+            container.querySelectorAll('.error-message').forEach(span => span.textContent = '');
+            container.querySelectorAll('.input-group').forEach(group => group.classList.remove('error'));
+        }
+
+        function setError(fieldId, message) {
+            const errorSpan = document.getElementById(`${fieldId}-error`);
+            const inputGroup = errorSpan.parentElement;
+            errorSpan.textContent = message;
+            inputGroup.classList.add('error');
+        }
+
+        // Validation Functions
+        function validatePersonal() {
+            const container = document.getElementById('step1');
+            clearErrors(container);
+            let isValid = true;
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const linkedin = document.getElementById('linkedin').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const state = document.getElementById('state').value.trim();
+            const country = document.getElementById('country').value.trim();
+            const role = document.getElementById('role').value.trim();
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phonePattern = /^[0-9]{10,15}$/;
+            const linkedinPattern = /^(https?:\/\/)?(www\.)?linkedin\.com\/(in|pub|company)\/[a-zA-Z0-9_-]+\/?$/;
+
+            if (!name) setError('name', 'Required'), isValid = false;
+            else if (name.length < 5) setError('name', 'Minimum 5 characters'), isValid = false;
+            if (!email.match(emailPattern)) setError('email', 'Invalid email'), isValid = false;
+            if (!phone.match(phonePattern)) setError('phone', '10-15 digits required'), isValid = false;
+            if (!linkedin.match(linkedinPattern)) setError('linkedin', 'Invalid URL'), isValid = false;
+            if (!city) setError('city', 'Required'), isValid = false;
+            if (!state) setError('state', 'Required'), isValid = false;
+            if (!country) setError('country', 'Required'), isValid = false;
+            if (!role) setError('role', 'Required'), isValid = false;
+
+            if (isValid) nextStep(2);
+            return isValid;
+        }
+
+        function validateEducation() {
+            const container = document.getElementById('step2');
+            clearErrors(container);
+            let isValid = true;
+
+            const entries = container.querySelectorAll('.education-entry');
+            entries.forEach((entry, index) => {
+                const degree = entry.querySelector(`#degree-${index}`).value;
+                const institution = entry.querySelector(`#institution-name-${index}`).value.trim();
+                const year = entry.querySelector(`#completion-year-${index}`).value;
+                const percentage = entry.querySelector(`#percentage-cgpa-${index}`).value;
+                const branch = entry.querySelector(`#branches-${index}`);
+
+                if (!degree) setError(`degree-${index}`, 'Required'), isValid = false;
+                if (!institution) setError(`institution-name-${index}`, 'Required'), isValid = false;
+                if (!year || year < 2020) setError(`completion-year-${index}`, '2020 or later'), isValid = false;
+                if (!percentage || percentage < 0 || percentage > 100) setError(`percentage-cgpa-${index}`, '0-100 required'), isValid = false;
+                if (["B.E", "B.Tech", "M.E", "M.Tech"].includes(degree) && !branch.value) setError(`branches-${index}`, 'Required'), isValid = false;
+            });
+
+            if (isValid) nextStep(3);
+            return isValid;
+        }
+
+        function validateWorkExperience() {
+            const container = document.getElementById('step3');
+            clearErrors(container);
+            let isValid = true;
+
+            const entries = container.querySelectorAll('.work-entry');
+            entries.forEach((entry, index) => {
+                const jobTitle = entry.querySelector(`#job-title-${index}`).value.trim();
+                const company = entry.querySelector(`#company-name-${index}`).value.trim();
+                const location = entry.querySelector(`#location-type-${index}`).value;
+                const responsibilities = entry.querySelectorAll(`input[name="responsibility-${index}"]:checked`);
+                const start = entry.querySelector(`#start-employment-period-${index}`).value;
+                const end = entry.querySelector(`#end-employment-period-${index}`).value;
+
+                if (!jobTitle) setError(`job-title-${index}`, 'Required'), isValid = false;
+                if (!company) setError(`company-name-${index}`, 'Required'), isValid = false;
+                if (!location) setError(`location-type-${index}`, 'Required'), isValid = false;
+                if (responsibilities.length === 0) setError(`responsibility-${index}`, 'Select at least one'), isValid = false;
+                if (!start) setError(`start-employment-period-${index}`, 'Required'), isValid = false;
+                if (!end) setError(`end-employment-period-${index}`, 'Required'), isValid = false;
+                if (start && end && start > end) setError(`start-employment-period-${index}`, 'Must be before end'), isValid = false;
+            });
+
+            if (isValid) nextStep(4);
+            return isValid;
+        }
+
+        function validateProject() {
+            const container = document.getElementById('step4');
+            clearErrors(container);
+            let isValid = true;
+
+            const entries = container.querySelectorAll('.project-entry');
+            entries.forEach((entry, index) => {
+                const title = entry.querySelector(`#project-title-${index}`).value.trim();
+                const desc = entry.querySelector(`#project-description-${index}`).value.trim();
+                const tech = entry.querySelector(`#project-technologies-${index}`).value.trim();
+                const start = entry.querySelector(`#start-project-year-${index}`).value;
+                const end = entry.querySelector(`#end-project-year-${index}`).value;
+
+                if (!title) setError(`project-title-${index}`, 'Required'), isValid = false;
+                else if (title.length < 5) setError(`project-title-${index}`, '5+ characters'), isValid = false;
+                if (!desc) setError(`project-description-${index}`, 'Required'), isValid = false;
+                else if (desc.length < 20) setError(`project-description-${index}`, '20+ characters'), isValid = false;
+                if (!tech) setError(`project-technologies-${index}`, 'Required'), isValid = false;
+                if (!start) setError(`start-project-year-${index}`, 'Required'), isValid = false;
+                if (!end) setError(`end-project-year-${index}`, 'Required'), isValid = false;
+                if (start && end && start > end) setError(`start-project-year-${index}`, 'Must be before end'), isValid = false;
+            });
+
+            if (isValid) nextStep(5);
+            return isValid;
+        }
+
+        function validateInternship() {
+            const container = document.getElementById('step5');
+            clearErrors(container);
+            let isValid = true;
+
+            const entries = container.querySelectorAll('.internship-entry');
+            entries.forEach((entry, index) => {
+                const company = entry.querySelector(`#internship-company-${index}`).value.trim();
+                const role = entry.querySelector(`#internship-role-${index}`).value.trim();
+                const duration = entry.querySelector(`#internship-duration-${index}`).value.trim();
+                const resp = entry.querySelector(`#internship-responsibilities-${index}`).value.trim();
+
+                if (!company) setError(`internship-company-${index}`, 'Required'), isValid = false;
+                if (!role) setError(`internship-role-${index}`, 'Required'), isValid = false;
+                const durationPattern = /^[0-9]+(\s?(weeks?|months?|years?))$/i;
+                if (!duration) setError(`internship-duration-${index}`, 'Required'), isValid = false;
+                else if (!duration.match(durationPattern)) setError(`internship-duration-${index}`, 'e.g., "3 months"'), isValid = false;
+                if (!resp) setError(`internship-responsibilities-${index}`, 'Required'), isValid = false;
+            });
+
+            if (isValid) nextStep(6);
+            return isValid;
+        }
+
+        function validateSkills() {
+            const container = document.getElementById('step6');
+            clearErrors(container);
+            let isValid = true;
+
+            const skills = container.querySelectorAll('input[name="skills"]:checked');
+            if (skills.length === 0) setError('skills', 'Select at least one'), isValid = false;
+
+            if (isValid) nextStep(7);
+            return isValid;
+        }
+
+        function validateCertification() {
+            const container = document.getElementById('step7');
+            clearErrors(container);
+            let isValid = true;
+
+            const entries = container.querySelectorAll('.certificate-entry');
+            entries.forEach((entry, index) => {
+                const name = entry.querySelector(`#certification-name-${index}`).value.trim();
+                const org = entry.querySelector(`#issuing-org-${index}`).value.trim();
+                const year = entry.querySelector(`#certification-year-${index}`).value;
+
+                if (!name) setError(`certification-name-${index}`, 'Required'), isValid = false;
+                if (!org) setError(`issuing-org-${index}`, 'Required'), isValid = false;
+                if (!year || year < 2020) setError(`certification-year-${index}`, '2020 or later'), isValid = false;
+            });
+
+            if (isValid) nextStep(8);
+            return isValid;
+        }
+
+        function validateLanguages() {
+            const container = document.getElementById('step8');
+            clearErrors(container);
+            let isValid = true;
+
+            const languages = container.querySelectorAll('input[name="languages"]:checked');
+            if (languages.length === 0) setError('languages', 'Select at least one'), isValid = false;
+
+            if (isValid) nextStep(9);
+            return isValid;
+        }
+
+        function validateImage() {
+            const container = document.getElementById('step9');
+            clearErrors(container);
+            let isValid = true;
+
+            const image = document.getElementById('imageUpload');
+            if (!image.files.length) setError('imageUpload', 'Required'), isValid = false;
+
+            if (isValid) nextStep(10);
+            return isValid;
+        }
+
+        function validateTemplate() {
+            const container = document.getElementById('step10');
+            clearErrors(container);
+            let isValid = true;
+
+            const selectedTemplate = container.querySelector('input[name="template"]:checked');
+            if (!selectedTemplate) {
+                setError('template', 'Select at least one template');
+                isValid = false;
+            }
+            if (isValid) detailsStore();
+            return isValid;
+        }
+
+        // Chatbot Functions
+        function toggleChatbot() {
+            const chatbotWindow = document.getElementById('chatbotWindow');
+            chatbotWindow.style.display = chatbotWindow.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function closeChatbot() {
+            const chatbotWindow = document.getElementById('chatbotWindow');
+            chatbotWindow.style.display = 'none';
+        }
+
+        function refreshChatbot() {
+            const chatbotBody = document.getElementById('chatbotBody');
+            chatbotBody.innerHTML = '<div class="chat-message bot-message">Hello! I\'m your AI assistant powered by ISS057. How can I help you with your resume?</div>';
+        }
+
+        function addMessage(content, isUser = false) {
+            const chatbotBody = document.getElementById('chatbotBody');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('chat-message', isUser ? 'user-message' : 'bot-message');
+            messageDiv.textContent = content;
+            chatbotBody.appendChild(messageDiv);
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        }
+
+        function sendMessage() {
+            const chatInput = document.getElementById('chatInput');
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, true);
+            chatInput.value = '';
+
+            fetch('http://127.0.0.1:5000/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                addMessage(data.response);
+            })
+            .catch(error => addMessage('Sorry, I encountered an error!'));
+        }
+
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>

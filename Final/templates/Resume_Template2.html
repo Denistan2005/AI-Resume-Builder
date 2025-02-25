@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume - {{ full_name }}</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+    <script src="https://unpkg.com/html-docx-js/dist/html-docx.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+        :root {
+            --primary-color: #60a5fa; /* Light blue */
+            --secondary-color: #93c5fd; /* Lighter blue */
+            --accent-color: #dbeafe; /* Very light blue */
+            --text-primary: #1e293b; /* Dark slate for text */
+            --text-secondary: #64748b; /* Lighter slate for secondary text */
+            --bg-primary: #f8fafc; /* Near-white background */
+            --bg-secondary: #e2e8f0; /* Light gray for subtle contrast */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg-primary);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-primary);
+        }
+
+        .container {
+            display: flex;
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); /* Softer shadow */
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 35%;
+            background: var(--primary-color);
+            color: var(--text-primary); /* Changed to dark text for readability */
+            padding: 30px;
+        }
+
+        .main-content {
+            width: 65%;
+            padding: 30px;
+        }
+
+        .profile-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            margin: 5px 0;
+            color: var(--text-secondary);
+        }
+
+        .social-links a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 400;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
+        .section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .section ul li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .section ul li::before {
+            content: "➤";
+            color: var(--secondary-color);
+            position: absolute;
+            left: 0;
+        }
+
+        .download-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: background 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; max-width: 100%; }
+            .sidebar { background: white; color: var(--text-primary); }
+        }
+
+        /* Style the home button */
+        .home-btn {
+            display: flex;
+            align-items: center; /* Vertically centers icon and text */
+            justify-content: center; /* Horizontally centers content inside button */
+            background-color: white; /* Turquoise from body gradient */
+            color: var(--primary-color);
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-family: 'Poppins', sans-serif;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 20px auto; /* Centers button horizontally and adds spacing */
+        }
+
+        .home-btn i {
+            margin-right: 8px; /* Space between icon and text */
+        }
+
+        .home-btn:hover {
+            background-color: var(--primary-color); /* Darker blue on hover */
+            color: white;
+        }
+
+        .navbar {
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto 20px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h2 class="left">ISS057</h2>
+        <h2 class="center">AI Resume Builder</h2>
+        <h2 class="right" id="datetime"></h2>
+    </nav>
+
+    <!-- Home Button Outside Navbar -->
+    <button class="home-btn" onclick="window.location.href='C:\\Deni\\Clinics\\Resume\\venv\\Final\\home.html'">
+        <i class="fas fa-home"></i> Home
+    </button>
+    
+    <div class="container" id="resume">
+        <div class="sidebar">
+            <div class="profile-container">
+                <img src="{{ image }}" alt="Profile Image" class="profile-image" crossorigin="anonymous">
+                <h1>{{ full_name }}</h1>
+                <p>{{ role }}</p>
+                <p>Email: {{ email }}</p>
+                <p>Phone: {{ phone_number }}</p>
+                <p>{{ city }}, {{ state }}, {{ country }}</p>
+                <p class="social-links"><a href="{{ linkedin }}" target="_blank">LinkedIn</a></p>
+            </div>
+            <div class="section">
+                <h2>Skills</h2>
+                <ul>
+                    {% for skill in skills %}
+                    <li>{{ skill }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="section">
+                <h2>Languages</h2>
+                <ul>
+                    {% for language in languages %}
+                    <li>{{ language }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="section">
+                <h2>About Me</h2>
+                <p>{{ about_me }}</p>
+            </div>
+            <div class="section">
+                <h2>Work Experience</h2>
+                {% for exp in combined_experiences %}
+                <div>
+                    <h3>{{ exp.work.title }}</h3>
+                    <p><strong>{{ exp.work.company }} | {{ exp.work.locationType }}</strong></p>
+                    <p>{{ exp.work.start }} - {{ exp.work.end }}</p>
+                    <p>{{ exp.summary }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="section">
+                <h2>Internships</h2>
+                {% for intern in combined_internships %}
+                <div>
+                    <h3>{{ intern.internship.responsibilities }}</h3>
+                    <p><strong>Company:</strong> {{ intern.internship.company }}</p>
+                    <p><strong>Duration:</strong> {{ intern.internship.duration }}</p>
+                    {% if intern.internship.role %}
+                    <p><strong>Role:</strong> {{ intern.internship.role }}</p>
+                    {% endif %}
+                    {% if intern.summary %}
+                    <p>{{ intern.summary }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="section">
+                <h2>Projects</h2>
+                {% for pro in combined_projects %}
+                <div>
+                    <h3>{{ pro.project.title }}</h3>
+                    <p><strong>Duration:</strong> {{ pro.project.start }} - {{ pro.project.end }}</p>
+                    <p>{{ pro.summary }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="section">
+                <h2>Education</h2>
+                {% for edu in education %}
+                <div>
+                    <h3>{{ edu.degree }}{% if edu.branch and edu.degree in ["B.E", "M.E", "B.Tech", "M.Tech"] %}, {{ edu.branch }}{% endif %}</h3>
+                    <p><strong>{{ edu.institution }}</strong></p>
+                    <p>{{ edu.year|int - (4 if edu.degree in ["B.E", "B.Tech"] else 3 if edu.degree in ["M.E", "M.Tech"] else 1) }} - {{ edu.year }}</p>
+                    <p>Percentage: {{ edu.percentage }}%</p>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="section">
+                <h2>Certifications</h2>
+                <ul>
+                    {% for certification in certifications %}
+                    <li>{{ certification.name }} - {{ certification.organization }} - {{ certification.year }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center; margin: 20px 0;">
+        <button id="downloadPdf" class="download-btn">Download PDF</button>
+        <button id="downloadDocx" class="download-btn">Download DOCX</button>
+    </div>
+
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istNow = new Date(now.getTime() + istOffset);
+            const formattedDate = istNow.toISOString().replace('T', ' ').substring(0, 19);
+            document.getElementById('datetime').textContent = `${formattedDate}`;
+        }
+        setInterval(updateDateTime, 1000);
+        
+        function downloadFile() {
+            const button = document.getElementById('downloadPdf');
+            button.textContent = 'Generating PDF...';
+            button.disabled = true;
+
+            const element = document.querySelector("#resume");
+
+            const options = {
+                scale: 2,
+                useCORS: true,
+                allowTaint: false,
+                backgroundColor: null /* Preserve background colors */
+            };
+
+            html2canvas(element, options).then(canvas => {
+                const base64image = canvas.toDataURL("image/png");
+                
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                const pageWidth = 210;    // A4 width in mm
+                const pageHeight = 297;   // A4 height in mm
+                const padding = 10;       // 10mm padding on all sides
+                
+                const contentWidth = pageWidth - (2 * padding);
+                const contentHeight = canvas.height * contentWidth / canvas.width;
+                let heightLeft = contentHeight;
+                let position = padding;
+
+                pdf.addImage(
+                    base64image, 
+                    'PNG', 
+                    padding, 
+                    position, 
+                    contentWidth, 
+                    contentHeight, 
+                    undefined, 
+                    'FAST'
+                );
+                heightLeft -= (pageHeight - (2 * padding));
+
+                while (heightLeft >= 0) {
+                    pdf.addPage();
+                    position = -heightLeft + padding;
+                    pdf.addImage(
+                        base64image, 
+                        'PNG', /* Use PNG to retain colors */
+                        padding, 
+                        position, 
+                        contentWidth, 
+                        contentHeight, 
+                        undefined, 
+                        'FAST'
+                    );
+                    heightLeft -= (pageHeight - (2 * padding));
+                }
+
+                pdf.save("resume.pdf");
+
+                button.textContent = 'Download PDF';
+                button.disabled = false;
+            }).catch(error => {
+                console.error("PDF generation failed:", error);
+                alert("Error generating PDF. Please check the console for details.");
+                button.textContent = 'Download PDF';
+                button.disabled = false;
+            });
+        }
+
+
+        function downloadDocxFile() {
+            const button = document.getElementById('downloadDocx');
+            button.textContent = 'Generating DOCX...';
+            button.disabled = true;
+            const element = document.querySelector("#resume");
+            const htmlContent = element.outerHTML;
+            const converted = htmlDocx.asBlob(htmlContent);
+            saveAs(converted, "resume.docx");
+            button.textContent = 'Download DOCX';
+            button.disabled = false;
+        }
+
+        document.getElementById('downloadPdf').addEventListener('click', downloadFile);
+        document.getElementById('downloadDocx').addEventListener('click', downloadDocxFile);
+    </script>
+</body>
+</html>

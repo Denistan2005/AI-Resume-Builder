@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISS057 AI Resume Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #96C93D);
+            background-size: 400% 400%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 150%;
+            height: 210%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 2px, transparent 5px);
+            background-size: 40px 40px;
+            animation: moveBackground 40s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-60px, -60px); }
+        }
+
+        .ksi-text {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 5em;
+            font-weight: 700;
+            background: linear-gradient(0deg, #FF3CAC, #784BA0, #2B86C5, #4e3de7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            z-index: 1001;
+            letter-spacing: 3px;
+            transition: all 0.3s ease;
+            animation: bobbing 3s ease-in-out infinite;
+        }
+
+        @keyframes bobbing {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+
+
+
+        .header {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            animation: logoAnimation 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        }
+
+        @keyframes logoAnimation {
+            0% {
+                transform: scale(1) rotate(0deg);
+                filter: hue-rotate(0deg);
+            }
+            25% {
+                transform: scale(1.2) rotate(5deg);
+                filter: hue-rotate(90deg);
+            }
+            50% {
+                transform: scale(1) rotate(0deg);
+                filter: hue-rotate(180deg);
+            }
+            75% {
+                transform: scale(1.2) rotate(-5deg);
+                filter: hue-rotate(270deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                filter: hue-rotate(360deg);
+            }
+        }
+
+        .header-text {
+            color: white;
+            font-size: 1.8em;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 120px auto 40px;
+            padding: 20px;
+        }
+
+        .hero-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #FF6B6B, #4ECDC4, #FFE66D, #96C93D);
+            background-size: 400% 400%;
+            animation: gradientBorder 3s ease infinite;
+        }
+
+        @keyframes gradientBorder {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
+        }
+
+        h1 {
+            font-size: 3.5em;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #FFE66D);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .team-name {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FF6B6B, #4ECDC4);
+        }
+
+        .feature-card:nth-child(2)::before {
+            background: linear-gradient(90deg, #4ECDC4, #FFE66D);
+        }
+
+        .feature-card:nth-child(3)::before {
+            background: linear-gradient(90deg, #FFE66D, #96C93D);
+        }
+
+        .feature-card:nth-child(4)::before {
+            background: linear-gradient(90deg, #96C93D, #FF6B6B);
+        }
+
+        .feature-card:nth-child(5)::before {
+            background: linear-gradient(90deg, #FF6B6B, #FFE66D);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .feature-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+
+        .buttons-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .btn {
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: white;
+            background-size: 300% 100%;
+            animation: gradientButton 3s ease infinite;
+        }
+
+        .btn:nth-child(1) {
+            background-image: linear-gradient(to right, #FF6B6B, #4ECDC4, #FFE66D, #FF6B6B);
+        }
+
+        .btn:nth-child(2) {
+            background-image: linear-gradient(to right, #4ECDC4, #FFE66D, #96C93D, #4ECDC4);
+        }
+
+        @keyframes gradientButton {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .buttons-container {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .header-text {
+                font-size: 1.4em;
+            }
+
+            .ksi-text {
+                font-size: 3em;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <img src="image.jpeg" alt="College Logo" class="logo">
+            <div class="header-text">AI Resume Builder</div>
+            <div class="ksi-text">KSI</div>
+        </div>
+    </header>
+    
+
+    <div class="main-container">
+        <div class="hero-section">
+            <h1>Welcome to <span class="team-name">ISS057</span> Resume Builder</h1>
+            <p style="text-align: center; font-size: 1.4em; color: #666; margin-bottom: 30px;">
+                Transform your career journey with our AI-powered resume building platform
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Smart Templates</h3>
+                    <p>Professional templates tailored to your industry and career level</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI-Powered</h3>
+                    <p>Advanced AI suggestions for compelling content that stands out</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Real-time Analysis</h3>
+                    <p>Get instant feedback and suggestions to enhance your resume's impact</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>ATS Optimization</h3>
+                    <p>Smart keyword optimization to ensure your resume passes Applicant Tracking Systems</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Score Analysis</h3>
+                    <p>Detailed scoring insights and personalized recommendations for improvement</p>
+                </div>
+            </div>
+
+            <div class="buttons-container">
+                <a href="Resume_Details.html" class="btn">Build Your Resume</a>
+                <a href="Resume_ATS.html" class="btn">Get Resume Feedback</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
