@@ -106,7 +106,7 @@ client = MongoClient("mongodb://localhost:27017/")
 db = client["User"]
 collection = db["users"]
 
-os.environ["GEMINI_API_KEY"] = "AIzaSyDTvYF9fFaxGE_bvgaif-foRjdqK13P5e8" # Gemini API Key
+os.environ["GEMINI_API_KEY"] = "" # Gemini API Key
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 # AI Model Configuration
